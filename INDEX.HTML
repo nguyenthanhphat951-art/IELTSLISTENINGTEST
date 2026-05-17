@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge IELTS 20 Listening Practice Suite</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .test-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .test-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-black text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-white text-black flex items-center justify-center font-extrabold text-xl shadow-inner">
+                    iL
+                </div>
+                <div>
+                    <h1 class="text-base font-extrabold tracking-wider uppercase leading-none">IELTS Active</h1>
+                    <span class="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">Listening Portal</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex items-center gap-6 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                    <a href="#" class="hover:text-white transition-colors">Trang chủ</a>
+                    <a href="#huong-dan" class="hover:text-white transition-colors">Hướng dẫn</a>
+                    <a href="#test-list" class="hover:text-white transition-colors">Danh sách đề</a>
+                </nav>
+                <span class="bg-emerald-500 text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full animate-pulse">
+                    Cambridge 20 Ready
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative bg-gradient-to-b from-slate-900 to-slate-950 text-white py-16 sm:py-24 px-4 overflow-hidden">
+        <!-- Background Decorative Elements -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-blue-500 blur-3xl"></div>
+            <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-emerald-500 blur-3xl"></div>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto text-center">
+            <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                Luyện thi thử IELTS Listening chuẩn 2026
+            </span>
+            <h2 class="mt-6 font-serif text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
+                Cambridge IELTS 20 <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Listening Suite</span>
+            </h2>
+            <p class="mt-6 text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
+                Hệ thống thi thử Listening chất lượng cao mô phỏng chuẩn xác giao diện thi máy tính (Computer-delivered IELTS) của IDP & British Council. Tận dụng cơ chế kéo thả tệp âm thanh trực tiếp và chấm điểm thông minh.
+            </p>
+            
+            <!-- Quick Features -->
+            <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left max-w-3xl mx-auto">
+                <div class="bg-white/5 border border-white/10 rounded-lg p-3.5 flex items-center gap-3">
+                    <i class="fa-solid fa-volume-high text-emerald-400 text-lg"></i>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase">Phát Offline</h4>
+                        <p class="text-[10px] text-slate-400">Kéo thả tệp từ máy</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-lg p-3.5 flex items-center gap-3">
+                    <i class="fa-solid fa-highlighter text-blue-400 text-lg"></i>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase">Highlight</h4>
+                        <p class="text-[10px] text-slate-400">Bôi đen từ khóa</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-lg p-3.5 flex items-center gap-3">
+                    <i class="fa-solid fa-calculator text-yellow-400 text-lg"></i>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase">Chấm Điểm</h4>
+                        <p class="text-[10px] text-slate-400">Hiển thị Band Score</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-lg p-3.5 flex items-center gap-3">
+                    <i class="fa-solid fa-expand text-pink-400 text-lg"></i>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase">Kéo Giãn</h4>
+                        <p class="text-[10px] text-slate-400">Tùy biến khung câu hỏi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN INTERACTIVE WORKSPACE -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
+        
+        <!-- SEARCH & CONTROL AREA -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 pb-6 border-b border-slate-200">
+            <div>
+                <h3 class="text-lg font-bold text-slate-800" id="test-list">Danh Sách Đề Thi Thử</h3>
+                <p class="text-xs text-slate-500">Lựa chọn một trong bốn đề thi của bộ Cambridge 20 dưới đây để bắt đầu.</p>
+            </div>
+            
+            <div class="relative w-full sm:w-80">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" id="test-search" placeholder="Tìm kiếm nhanh đề thi..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:border-black transition-all bg-white font-medium">
+            </div>
+        </div>
+
+        <!-- TESTS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="tests-grid-container">
+            
+            <!-- TEST 1 CARD -->
+            <div class="test-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col justify-between shadow-sm" data-title="cambridge ielts 20 test 1 listening">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Test 1</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 Mins</span>
+                    </div>
+                    <h4 class="font-serif text-lg font-bold text-slate-900 leading-snug mb-2">Cambridge IELTS 20</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">Bài thi nghe thử thách đầu tiên với các chủ đề đa dạng từ hội thoại sinh hoạt hàng ngày đến bài giảng học thuật.</p>
+                    
+                    <div class="space-y-2 text-[11px] text-slate-600 border-t border-slate-100 pt-3">
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 1: Standard Questions</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 2: Form Completion</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 3: Multiple Choice</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 4: Lecture Notes</p>
+                    </div>
+                </div>
+                <div class="p-6 bg-slate-50 border-t border-slate-100">
+                    <a href="CAM20TEST1.HTML" class="block w-full bg-black text-white hover:bg-slate-800 text-center py-3 text-xs font-bold uppercase tracking-wider rounded transition-colors shadow-sm">
+                        Bắt đầu làm bài <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TEST 2 CARD -->
+            <div class="test-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col justify-between shadow-sm" data-title="cambridge ielts 20 test 2 listening">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Test 2</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 Mins</span>
+                    </div>
+                    <h4 class="font-serif text-lg font-bold text-slate-900 leading-snug mb-2">Cambridge IELTS 20</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">Bài thi nghe nâng cao hỗ trợ đầy đủ các dạng bài điền khuyết, trắc nghiệm chọn vai trò tình nguyện viên và xu hướng thực phẩm.</p>
+                    
+                    <div class="space-y-2 text-[11px] text-slate-600 border-t border-slate-100 pt-3">
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 1: Caregiver Assessment</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 2: Volunteer Roles</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 3: Human Geography</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 4: Food Trends</p>
+                    </div>
+                </div>
+                <div class="p-6 bg-slate-50 border-t border-slate-100">
+                    <a href="CAM20TEST2.HTML" class="block w-full bg-black text-white hover:bg-slate-800 text-center py-3 text-xs font-bold uppercase tracking-wider rounded transition-colors shadow-sm">
+                        Bắt đầu làm bài <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TEST 3 CARD -->
+            <div class="test-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col justify-between shadow-sm" data-title="cambridge ielts 20 test 3 listening">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-purple-50 text-purple-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Test 3</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 Mins</span>
+                    </div>
+                    <h4 class="font-serif text-lg font-bold text-slate-900 leading-snug mb-2">Cambridge IELTS 20</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">Tích hợp sơ đồ di tích khảo cổ học tương tác hình ảnh sắc nét, bản dịch định vị vùng nghe tối ưu cho Part 2.</p>
+                    
+                    <div class="space-y-2 text-[11px] text-slate-600 border-t border-slate-100 pt-3">
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 1: Furniture Rental</p>
+                        <p class="flex items-center gap-2 text-emerald-600 font-bold"><i class="fa-regular fa-image text-emerald-500"></i> Part 2: Archaeological Dig (Map)</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 3: Theatre Programmes</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 4: Inclusive Design</p>
+                    </div>
+                </div>
+                <div class="p-6 bg-slate-50 border-t border-slate-100">
+                    <a href="CAM20TEST3.HTML" class="block w-full bg-black text-white hover:bg-slate-800 text-center py-3 text-xs font-bold uppercase tracking-wider rounded transition-colors shadow-sm">
+                        Bắt đầu làm bài <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TEST 4 CARD -->
+            <div class="test-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col justify-between shadow-sm" data-title="cambridge ielts 20 test 4 listening">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Test 4</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 Mins</span>
+                    </div>
+                    <h4 class="font-serif text-lg font-bold text-slate-900 leading-snug mb-2">Cambridge IELTS 20</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">Đặc thù tích hợp các câu hỏi ghép nhiều đáp án nâng cao ở Part 2 và Part 3, cùng hệ thống chấm điểm chuyên nghiệp.</p>
+                    
+                    <div class="space-y-2 text-[11px] text-slate-600 border-t border-slate-100 pt-3">
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 1: Family Visit Advice</p>
+                        <p class="flex items-center gap-2 text-blue-600 font-bold"><i class="fa-solid fa-list-check text-blue-500"></i> Part 2: Stadium Tour (Select 2)</p>
+                        <p class="flex items-center gap-2 text-blue-600 font-bold"><i class="fa-solid fa-list-check text-blue-500"></i> Part 3: Handwriting (Select 2)</p>
+                        <p class="flex items-center gap-2"><i class="fa-regular fa-circle-play text-slate-400"></i> Part 4: Chembe Bird Sanctuary</p>
+                    </div>
+                </div>
+                <div class="p-6 bg-slate-50 border-t border-slate-100">
+                    <a href="CAM20TEST4.HTML" class="block w-full bg-black text-white hover:bg-slate-800 text-center py-3 text-xs font-bold uppercase tracking-wider rounded transition-colors shadow-sm">
+                        Bắt đầu làm bài <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SYSTEM GUIDE SECTION -->
+        <section class="mt-20 bg-white border border-slate-200 rounded-xl p-8 sm:p-12 max-w-4xl mx-auto shadow-sm" id="huong-dan">
+            <h3 class="font-serif text-2xl font-bold text-slate-900 text-center mb-10 pb-2 border-b border-slate-100">
+                Hướng Dẫn Sử Dụng Hệ Thống Thi Thử
+            </h3>
+            
+            <div class="space-y-8">
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center shrink-0">1</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Lựa chọn đề bài</h4>
+                        <p class="text-xs text-slate-500 mt-1">Bấm nút "Bắt đầu làm bài" của bài thi mong muốn trong danh sách phía trên để mở trang làm bài.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center shrink-0">2</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Kéo thả tệp âm thanh (Offline Mode)</h4>
+                        <p class="text-xs text-slate-500 mt-1">Chuẩn bị sẵn tệp âm thanh bài nghe của Test tương ứng trên máy tính của bạn. Trực tiếp kéo tệp đó thả vào ô nét đứt ở màn hình bắt đầu bài thi. Phương án này giúp bạn phát mượt mà không lo tải chậm hoặc lỗi mạng.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center shrink-0">3</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Làm bài & Trải nghiệm phòng thi thật</h4>
+                        <p class="text-xs text-slate-500 mt-1">Hệ thống áp dụng chuẩn "Continuous CD Mode" - không có nút tạm dừng hay tua nhanh để rèn luyện sự tập trung tối đa của bạn. Bạn có thể bôi đậm từ khóa bằng cách kéo chọn văn bản, hoặc kéo giãn thanh chia cửa sổ để dễ làm bài.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center shrink-0">4</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Nộp bài & Phân tích đáp án</h4>
+                        <p class="text-xs text-slate-500 mt-1">Khi hoàn tất, hãy bấm "Submit Test". Hệ thống sẽ chấm tự động, quy đổi điểm sang IELTS Band Score tương đương và highlight rõ ràng những đáp án sai, hiển thị trực quan đáp án đúng để bạn đối chiếu.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-slate-400 py-10 border-t border-slate-900 select-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-white text-black flex items-center justify-center font-extrabold text-base">
+                        iL
+                    </div>
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">Cambridge IELTS 20 Listening Practice Suite</p>
+                </div>
+                <p class="text-[11px]">© 2026 IELTS Active Portal. Thiết kế tối ưu hóa cho ôn luyện học thuật.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SEARCH LOGIC -->
+    <script>
+        const searchInput = document.getElementById('test-search');
+        const cards = document.querySelectorAll('.test-card');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
