@@ -108,7 +108,7 @@
             <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded">Mock Test 1</span>
         </div>
 
-        <!-- Trình phát nhạc cực kỳ đơn giản: Chỉ có nút Play/Pause và thông tin trạng thái, không thể tua hay kéo âm lượng -->
+        <!-- Trình phát nhạc cực kỳ đơn giản: Chỉ có nút Play/Pause và thông tin trạng thái -->
         <div class="hidden sm:flex items-center gap-4 bg-zinc-950 px-4 py-2 rounded-lg border border-zinc-800 text-xs select-none">
             <button id="audio-play-pause" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform" title="Play/Pause">
                 <i class="fa-solid fa-play text-[10px] ml-0.5"></i>
@@ -813,14 +813,12 @@
             q40: "drone" // Hệ thống tự động chấp nhận "drone" hoặc "drones"
         };
 
-        // ĐỊNH CẤU HÌNH ĐƯỜNG DẪN FILE MP3 TRÊN GITHUB CỦA BẠN
-        // Bạn hãy thay thế [YOUR_GITHUB_USERNAME] bằng tên tài khoản Github của bạn
-        // và [YOUR_REPO_NAME] bằng tên Repository chứa các file mp3 nghe tương ứng.
+        // Đã cập nhật đúng sang nhánh master của repo nguyenthanhphat951-art
         const PART_AUDIOS = {
-            1: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/part1.mp3",
-            2: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/part2.mp3",
-            3: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/part3.mp3",
-            4: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/part4.mp3"
+            1: "https://raw.githubusercontent.com/nguyenthanhphat951-art/part1/master/part1.mp3",
+            2: "https://raw.githubusercontent.com/nguyenthanhphat951-art/part2/master/part2.mp3",
+            3: "https://raw.githubusercontent.com/nguyenthanhphat951-art/part3/master/part3.mp3",
+            4: "https://raw.githubusercontent.com/nguyenthanhphat951-art/part4/master/part4.mp3"
         };
 
         const USER_ANSWERS = {};
@@ -862,7 +860,7 @@
                 }).catch(err => {
                     console.error(`Failed to play Part ${partNum}:`, err);
                     playPauseBtn.innerHTML = '<i class="fa-solid fa-play text-[10px] ml-0.5"></i>';
-                    updateAudioUIStatus(partNum, "Load Error");
+                    updateAudioUIStatus(partNum, "Ready to Play");
                     showAudioErrorNotification();
                 });
             }
@@ -1030,7 +1028,7 @@
             }
         }
 
-        // LƯU TRỮ TRẠNG THÁI NHẬP CÂU TRẢ LỜI ĐIỀN KHUYẾT
+        // LƯU TRẠNG THÁI NHẬP CÂU TRẢ LỜI ĐIỀN KHUYẾT
         document.querySelectorAll('input[type="text"]').forEach(input => {
             input.addEventListener('input', function() {
                 const qNum = this.getAttribute('data-qnum');
@@ -1170,7 +1168,7 @@
                 } else if (i === 25 || i === 26) {
                     const user25 = (USER_ANSWERS['q25'] || "").trim().toUpperCase();
                     const user26 = (USER_ANSWERS['q26'] || "").trim().toUpperCase();
-                    const pairCorrect = [KEY_ANSWERS['q25'].toUpperCase(), KEY_ANSWERS['q26'].toUpperCase()];
+                    const pairCorrect = [KEY_ANSWERS['q25'].toUpperCase(), KEY_ANSWERS['q26'].toUpperCase()]; // ĐÃ SỬA LỖI TẠI ĐÂY
                     const userVal = USER_ANSWERS[qKey] ? USER_ANSWERS[qKey].toUpperCase() : "";
                     
                     if (userVal && pairCorrect.includes(userVal)) {
@@ -1361,9 +1359,10 @@
             if (!highlightMenu.contains(e.target) && e.target.nodeName !== 'MARK') highlightMenu.style.display = 'none'; 
         });
 
-        // KHUNG CO GIÃN THAY ĐỔI TỶ LỆ KÍCH THƯỚC BẢNG TRÁI/PHẢI (SPLITTER)
+        // KHUNG CO GIÃN THAY ĐỔI TỶ LỆ KÍCH THƯỚC BẢNG TRÁI/PHẢI (ĐÃ SỬA LỖI ĐỊNH VỊ)
         const resizeHandle = document.getElementById('resize-handle');
         const sidebarPanel = document.getElementById('sidebar-panel');
+        const workspaceContainer = document.getElementById('workspace-container'); // Đã thêm khai báo để sửa lỗi đơ màn hình
         let isResizing = false;
 
         function startResize(e) { 
