@@ -56,7 +56,7 @@
         .mc-opt-btn.active .radio-circle { border-color: #000000 !important; }
         .mc-opt-btn.active .radio-dot { transform: scale(1) !important; opacity: 1 !important; }
 
-        .mc-checkbox-btn.active { border-color: #000000 !important; background-color: #000000 !important; }
+        .mc-checkbox-btn.active { border-color: #000000 !important; background-color: #f4f4f5 !important; }
         .mc-checkbox-btn.active .check-box { border-color: #000000 !important; background-color: #000000 !important; }
         .mc-checkbox-btn.active .check-icon { opacity: 1 !important; transform: scale(1) !important; }
 
@@ -81,41 +81,52 @@
 </head>
 <body class="bg-white text-zinc-900 overflow-hidden h-screen flex flex-col font-sans select-none">
 
-    <!-- Đối tượng Audio trung tâm để phát tuần tự các Part -->
-    <audio id="exam-audio" preload="none"></audio>
+    <!-- Đối tượng Audio trung tâm để phát toàn bộ tệp được tải lên từ thiết bị -->
+    <audio id="exam-audio" preload="auto"></audio>
 
-    <!-- HỘP THOẠI BẮT ĐẦU THI (Bypass chặn Autoplay của trình duyệt) -->
+    <!-- HỘP THOẠI BẮT ĐẦU THI (Chứa vùng kéo thả tệp âm thanh & thông báo quy chế phòng thi) -->
     <div id="start-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] transition-opacity duration-300">
         <div class="bg-white p-8 rounded-xl border border-zinc-200 w-11/12 max-w-lg shadow-2xl text-center">
             <div class="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center mx-auto mb-5 shadow-lg">
                 <i class="fa-solid fa-headphones text-2xl"></i>
             </div>
             <h2 class="text-xl font-extrabold uppercase tracking-wider mb-2 text-black">Listening Practice Test</h2>
-            <p class="text-xs text-zinc-500 mb-6 leading-relaxed font-medium">
-                Welcome to the official IELTS Listening mock exam. Please make sure your headphones are properly connected and your system volume is adjusted. Once you click "Start Test", the audio files hosted on GitHub will automatically play in sequence and the 40-minute timer will begin. You cannot skip or modify the audio timeline.
+            <p class="text-xs text-zinc-500 mb-4 leading-relaxed font-medium">
+                Chào mừng bạn đến với hệ thống thi thử IELTS Listening. Hãy chuẩn bị tai nghe và kéo thả tệp âm thanh toàn bộ bài thi (.mp3, .wav) vào ô bên dưới trước khi bắt đầu.
             </p>
             
-            <button class="bg-black hover:bg-zinc-800 text-white font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all cursor-pointer shadow-md w-full animate-pulse" id="btn-start-test">
-                Start Test
+            <!-- Vùng kéo thả tệp âm thanh bài nghe -->
+            <div id="drop-zone" class="border-2 border-dashed border-zinc-300 hover:border-black rounded-lg p-6 my-4 cursor-pointer hover:bg-zinc-50/80 transition-all flex flex-col items-center justify-center select-none">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-zinc-400 mb-2"></i>
+                <p class="text-sm font-semibold text-zinc-700">Kéo & thả tệp âm thanh bài nghe vào đây</p>
+                <p class="text-xs text-zinc-400 mt-1">Hoặc nhấp chuột để chọn tệp từ máy tính</p>
+                <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
+                <div id="file-info" class="hidden mt-3 text-xs text-green-700 font-bold flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded border border-green-200">
+                    <i class="fa-solid fa-circle-check text-green-600"></i> <span id="file-name" class="truncate max-w-[240px]">filename.mp3</span>
+                </div>
+            </div>
+
+            <p class="text-[11px] text-zinc-400 mb-6 leading-relaxed">
+                * Lưu ý: Để đảm bảo tính nghiêm túc giống như kì thi thật, hệ thống phát liên tục và không thể tạm dừng (Pause) sau khi bài làm đã bắt đầu.
+            </p>
+            
+            <button class="bg-zinc-300 text-white font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all shadow-md w-full cursor-not-allowed" id="btn-start-test" disabled>
+                Vui lòng tải tệp nghe để bắt đầu
             </button>
         </div>
     </div>
 
-    <!-- HEADER CHỨA THỜI GIAN VÀ TRÌNH PHÁT NHẠC RÚT GỌN -->
+    <!-- HEADER CHỨA THỜI GIAN VÀ TRẠNG THÁI PHÁT NHẠC (KHÔNG CÓ NÚT PAUSE) -->
     <header class="bg-black text-white px-6 py-4 flex justify-between items-center border-b-2 border-black z-30 select-none shrink-0">
         <div class="logo-area flex items-center gap-4">
             <h1 class="text-lg font-bold tracking-widest uppercase">IELTS Listening</h1>
-            <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded">Mock Test 1</span>
+            <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded">Đề Thi Số 1</span>
         </div>
 
-        <!-- Trình phát nhạc cực kỳ đơn giản: Chỉ có nút Play/Pause và thông tin trạng thái -->
+        <!-- Trình hiển thị trạng thái âm thanh: Hoàn toàn không có nút điều khiển Play/Pause nhằm tránh tua/dừng -->
         <div class="hidden sm:flex items-center gap-4 bg-zinc-950 px-4 py-2 rounded-lg border border-zinc-800 text-xs select-none">
-            <button id="audio-play-pause" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform" title="Play/Pause">
-                <i class="fa-solid fa-play text-[10px] ml-0.5"></i>
-            </button>
-            <div class="h-4 w-[1px] bg-zinc-800"></div>
             <span id="audio-status-label" class="text-zinc-300 font-semibold tracking-wide flex items-center gap-2">
-                <i class="fa-solid fa-circle text-[8px] text-red-500 animate-ping"></i> Audio Ready
+                <i class="fa-solid fa-circle text-[8px] text-zinc-500"></i> Chưa tải file nghe
             </span>
             <div class="h-4 w-[1px] bg-zinc-800"></div>
             <span id="audio-timer" class="font-mono text-zinc-400">00:00 / 00:00</span>
@@ -127,7 +138,7 @@
                 <span id="timer-display">40:00</span>
             </div>
             <button class="bg-white hover:bg-zinc-200 text-black font-bold py-2 px-4 rounded text-xs uppercase tracking-wider transition-colors" id="btn-submit-exam">
-                Submit Test
+                Nộp Bài
             </button>
         </div>
     </header>
@@ -146,19 +157,19 @@
         <!-- BẢNG BÊN TRÁI: HIỂN THỊ CÁC CÂU HỎI (80% bề rộng mặc định) -->
         <div class="w-[80%] h-full overflow-y-auto p-10 bg-white border-r border-zinc-200 relative select-text" id="questions-workspace">
             
-            <!-- Banner cảnh báo lỗi tải bài nghe từ Github -->
+            <!-- Banner cảnh báo lỗi phát tệp âm thanh -->
             <div id="audio-error-banner" class="hidden bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-6 flex items-start gap-2.5 text-xs select-none">
                 <i class="fa-solid fa-triangle-exclamation text-red-600 text-base flex-shrink-0 mt-0.5"></i>
                 <div>
-                    <strong class="font-bold block text-red-950">Audio Loading Error!</strong>
-                    <span>The system is unable to stream the audio file for the current Part from your GitHub repository. Please double-check the path configuration in your HTML file or verify your internet connection.</span>
+                    <strong class="font-bold block text-red-950">Lỗi phát âm thanh!</strong>
+                    <span>Hệ thống không thể giải mã hoặc phát tệp tin đã tải lên. Vui lòng tải lại trang và kéo thả một tệp nghe hợp lệ khác.</span>
                 </div>
             </div>
 
             <!-- Hộp thoại hướng dẫn tô màu văn bản -->
             <div class="bg-zinc-100 border border-zinc-200 p-3 rounded text-xs text-zinc-700 mb-6 flex items-center gap-2 select-none">
                 <i class="fa-solid fa-circle-info text-black flex-shrink-0"></i>
-                <span><strong>Highlight Tool:</strong> Select any text in the questions area with your mouse to highlight it. Click on the highlighted text to remove it.</span>
+                <span><strong>Công cụ đánh dấu:</strong> Bôi đen một đoạn văn bản bất kỳ để đánh dấu. Nhấp vào phần đã đánh dấu để xóa màu.</span>
             </div>
 
             <!-- PART 1 QUESTIONS -->
@@ -714,7 +725,7 @@
 
         </div>
 
-        <!-- THANH CHIA KÉO GIÃN KHÔNG GIAN -->
+        <!-- THANH CHIA KÉO GIÃN KHÔNG GIAN BÀI LÀM -->
         <div class="w-1.5 bg-zinc-200 hover:bg-black cursor-col-resize h-full select-none transition-colors duration-150 shrink-0 z-20" id="resize-handle"></div>
 
         <!-- BẢNG BÊN PHẢI: CHỨA BẢNG ĐIỀU HƯỚNG CÂU HỎI (20% bề rộng mặc định) -->
@@ -723,7 +734,7 @@
             <div class="flex flex-col h-full justify-between">
                 <div>
                     <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-700 mb-4 flex items-center gap-1.5">
-                        <i class="fa-solid fa-list-ol"></i> Question Navigation
+                        <i class="fa-solid fa-list-ol"></i> Danh Sách Câu Hỏi
                     </h3>
                     <div class="grid grid-cols-4 gap-2" id="nav-grid-container">
                         <script>
@@ -738,43 +749,43 @@
                     </div>
                 </div>
 
-                <!-- Footer chứa thông số kỹ thuật tối giản -->
+                <!-- Chân trang sidebar hiển thị trạng thái -->
                 <div class="border-t border-zinc-200 pt-4 mt-6 text-[10px] text-zinc-400 font-medium">
-                    <p class="uppercase tracking-wider">Exam System Status:</p>
-                    <p class="mt-1 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Active & Locked</p>
+                    <p class="uppercase tracking-wider">Trạng thái hệ thống:</p>
+                    <p class="mt-1 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span> Đang hoạt động & Đã khóa</p>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- BẢNG ĐIỂM / MODAL BÁO CÁO KẾT QUẢ -->
+    <!-- BẢNG ĐIỂM / MODAL BÁO CÁO KẾT QUẢ SAU KHI NỘP BÀI -->
     <div id="score-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50 select-none">
         <div class="bg-white p-10 rounded-xl border border-zinc-200 w-11/12 max-w-sm text-center shadow-2xl transform scale-95 transition-transform duration-300" id="score-modal-content">
             <div class="w-32 h-32 rounded-full bg-black text-white flex flex-col items-center justify-center mx-auto mb-6 border-4 border-white shadow-xl relative">
                 <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-300 absolute top-4">Band</div>
                 <div class="text-5xl font-extrabold mt-2 tracking-tighter" id="modal-band-score">0.0</div>
             </div>
-            <h2 class="text-xl font-extrabold uppercase tracking-widest mb-1 text-black">Test Complete</h2>
-            <div class="text-base font-bold text-zinc-800 mb-4 bg-zinc-100 py-2 rounded">Raw Score: <span id="modal-score" class="text-black">0/40</span></div>
-            <p class="text-[13px] text-zinc-500 mb-8 leading-relaxed font-medium">Your IELTS Listening Practice exam has been graded. Close this dialog to review your answers on the page.</p>
-            <button class="bg-black hover:bg-zinc-800 text-white font-bold py-3.5 px-8 text-xs uppercase tracking-wider rounded w-full transition-colors cursor-pointer shadow-md" id="modal-close-btn">Review Answers</button>
+            <h2 class="text-xl font-extrabold uppercase tracking-widest mb-1 text-black">Kết Quả Bài Thi</h2>
+            <div class="text-base font-bold text-zinc-800 mb-4 bg-zinc-100 py-2 rounded">Điểm số: <span id="modal-score" class="text-black">0/40</span></div>
+            <p class="text-[13px] text-zinc-500 mb-8 leading-relaxed font-medium">Bài thi thử IELTS Listening của bạn đã được chấm điểm tự động. Đóng hộp thoại này để xem lại đáp án chi tiết.</p>
+            <button class="bg-black hover:bg-zinc-800 text-white font-bold py-3.5 px-8 text-xs uppercase tracking-wider rounded w-full transition-colors cursor-pointer shadow-md" id="modal-close-btn">Xem Lại Bài Làm</button>
         </div>
     </div>
 
-    <!-- THANH MENU LỰA CHỌN MÀU BÔI ĐEN -->
+    <!-- THANH MENU LỰA CHỌN MÀU ĐÁNH DẤU (HIGHLIGHT) -->
     <div id="highlight-menu" class="fixed hidden bg-black rounded py-1.5 px-3 shadow-lg z-[100] items-center gap-2.5 border border-zinc-800 select-none">
-        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#86efac] bg-[#bbf7d0] cursor-pointer hover:scale-110 transition-transform" data-color="#bbf7d0" title="Highlight Green"></button>
-        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#f9a8d4] bg-[#fbcfe8] cursor-pointer hover:scale-110 transition-transform" data-color="#fbcfe8" title="Highlight Pink"></button>
-        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#93c5fd] bg-[#bfdbfe] cursor-pointer hover:scale-110 transition-transform" data-color="#bfdbfe" title="Highlight Blue"></button>
-        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#fde047] bg-[#fef08a] cursor-pointer hover:scale-110 transition-transform" data-color="#fef08a" title="Highlight Yellow"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#86efac] bg-[#bbf7d0] cursor-pointer hover:scale-110 transition-transform" data-color="#bbf7d0" title="Đánh dấu màu xanh lá"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#f9a8d4] bg-[#fbcfe8] cursor-pointer hover:scale-110 transition-transform" data-color="#fbcfe8" title="Đánh dấu màu hồng"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#93c5fd] bg-[#bfdbfe] cursor-pointer hover:scale-110 transition-transform" data-color="#bfdbfe" title="Đánh dấu màu xanh dương"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#fde047] bg-[#fef08a] cursor-pointer hover:scale-110 transition-transform" data-color="#fef08a" title="Đánh dấu màu vàng"></button>
         <div class="w-[1px] h-4 bg-zinc-700 mx-0.5"></div>
-        <button id="btn-clear-selection" class="text-white hover:text-red-400 transition-colors" title="Delete Highlight"><i class="fa-regular fa-trash-can text-xs"></i></button>
+        <button id="btn-clear-selection" class="text-white hover:text-red-400 transition-colors" title="Xóa đánh dấu"><i class="fa-regular fa-trash-can text-xs"></i></button>
     </div>
 
-    <!-- KỊCH BẢN ĐIỀU KHIỂN -->
+    <!-- KỊCH BẢN ĐIỀU KHIỂN HỆ THỐNG PHÁT VÀ CHẤM ĐIỂM -->
     <script>
-        // Danh sách đáp án chuẩn mới tương ứng với câu hỏi IELTS đề xuất
+        // Danh sách đáp án chuẩn IELTS Listening
         const KEY_ANSWERS = {
             q1: "fish",
             q2: "roof",
@@ -784,7 +795,7 @@
             q6: "hotel",
             q7: "reviews",
             q8: "local",
-            q9: "30", // Hệ thống tự động so khớp chấp nhận thêm từ "thirty"
+            q9: "30", // Chấp nhận cả ký tự số hoặc chữ "thirty"
             q10: "average",
             q11: "A",
             q12: "B",
@@ -792,11 +803,11 @@
             q14: "A",
             q15: "B",
             q16: "C",
-            q17: "A", q18: "E", // Cặp câu hỏi Part 2
-            q19: "C", q20: "E", // Cặp câu hỏi Part 2
-            q21: "C", q22: "E", // Cặp câu hỏi Part 3
-            q23: "A", q24: "C", // Cặp câu hỏi Part 3
-            q25: "A", q26: "B", // Cặp câu hỏi Part 3
+            q17: "A", q18: "E", // Cặp câu trắc nghiệm Part 2
+            q19: "C", q20: "E", // Cặp câu trắc nghiệm Part 2
+            q21: "C", q22: "E", // Cặp câu trắc nghiệm Part 3
+            q23: "A", q24: "C", // Cặp câu trắc nghiệm Part 3
+            q25: "A", q26: "B", // Cặp câu trắc nghiệm Part 3
             q27: "A",
             q28: "B",
             q29: "A",
@@ -810,107 +821,139 @@
             q37: "beaches",
             q38: "ferry",
             q39: "bikes",
-            q40: "drone" // Hệ thống tự động chấp nhận "drone" hoặc "drones"
-        };
-
-        // Đã cập nhật đúng sang nhánh master của repo nguyenthanhphat951-art
-        const PART_AUDIOS = {
-            1: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/cam20-test1-part1.mp3",
-            2: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/cam20-test1-part2.mp3",
-            3: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/cam20-test1-part3.mp3",
-            4: "https://github.com/nguyenthanhphat951-art/IELTSLISTENINGTEST/blob/main/cam20-test1-part4.mp3"
+            q40: "drone" // Chấp nhận "drone" hoặc "drones"
         };
 
         const USER_ANSWERS = {};
         let isTimerRunning = false;
-        let timerSeconds = 40 * 60; // 40 phút làm bài thi Listening
+        let timerSeconds = 40 * 60; // 40 phút thi thử tiêu chuẩn
         let timerInterval = null;
         let hasGraded = false;
-        let currentPlayingPart = 1; // Khởi động phát từ Part 1
 
         const audio = document.getElementById('exam-audio');
-        const playPauseBtn = document.getElementById('audio-play-pause');
         const audioTimer = document.getElementById('audio-timer');
         const audioStatusLabel = document.getElementById('audio-status-label');
         const audioErrorBanner = document.getElementById('audio-error-banner');
         const questionsWorkspace = document.getElementById('questions-workspace');
 
-        // Hàm cập nhật trạng thái hiển thị của file nghe hiện tại
-        function updateAudioUIStatus(partNum, text) {
+        // Cập nhật trạng thái file nghe lên thanh Header
+        function updateAudioUIStatus(text) {
             if (hasGraded) {
-                audioStatusLabel.innerHTML = `<i class="fa-solid fa-lock text-zinc-500"></i> Locked`;
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-lock text-zinc-500"></i> Đã khóa`;
                 return;
             }
-            audioStatusLabel.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-green-500 animate-pulse"></i> Part ${partNum} - ${text}`;
+            if (text === "Đang phát") {
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-green-500 animate-ping"></i> Đang phát liên tục...`;
+            } else {
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-zinc-400"></i> Trạng thái: ${text}`;
+            }
         }
 
-        // Khởi chạy file nghe cho một Part cụ thể
-        function loadAndPlayPart(partNum) {
+        // Phát tệp âm thanh bài thi đã kéo thả vào
+        function startAudioPlayback() {
             if (hasGraded) return;
-            currentPlayingPart = partNum;
-            audio.src = PART_AUDIOS[partNum];
-            audio.load();
-            
             const playPromise = audio.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    playPauseBtn.innerHTML = '<i class="fa-solid fa-pause text-[10px]"></i>';
-                    updateAudioUIStatus(partNum, "Playing");
+                    updateAudioUIStatus("Đang phát");
                     audioErrorBanner.classList.add('hidden');
                 }).catch(err => {
-                    console.error(`Failed to play Part ${partNum}:`, err);
-                    playPauseBtn.innerHTML = '<i class="fa-solid fa-play text-[10px] ml-0.5"></i>';
-                    updateAudioUIStatus(partNum, "Ready to Play");
+                    console.error("Lỗi phát tệp âm thanh:", err);
+                    updateAudioUIStatus("Lỗi phát tệp");
                     showAudioErrorNotification();
                 });
             }
         }
 
-        // Tự động chuyển tiếp khi file nghe của Part trước đó chạy hết
+        // Tự động chuyển trạng thái khi file âm thanh kết thúc hoàn toàn
         audio.addEventListener('ended', () => {
-            if (currentPlayingPart < 4) {
-                const nextPart = currentPlayingPart + 1;
-                console.log(`Part ${currentPlayingPart} finished. Playing Part ${nextPart} automatically...`);
-                loadAndPlayPart(nextPart);
-            } else {
-                console.log("All listening parts have finished playing.");
-                updateAudioUIStatus(4, "Completed");
-            }
+            console.log("File nghe đã kết thúc.");
+            updateAudioUIStatus("Hoàn thành");
         });
 
-        // BẮT ĐẦU LÀM BÀI (Autoplay bypass)
-        document.getElementById('btn-start-test').addEventListener('click', () => {
+        // XỬ LÝ KÉO THẢ TỆP TIN ÂM THANH (DRAG AND DROP)
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('audio-file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameSpan = document.getElementById('file-name');
+        const startTestBtn = document.getElementById('btn-start-test');
+
+        // Ngăn chặn các hành vi tải lại trang mặc định của trình duyệt khi thả file
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false); // Tránh mở file trực tiếp nếu thả trượt
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Thêm khung viền đen nổi bật khi rê tệp vào vùng kéo thả
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('bg-zinc-100', 'border-black');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('bg-zinc-100', 'border-black');
+            }, false);
+        });
+
+        // Xử lý tệp sau khi được thả vào
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleAudioFiles(files);
+        }, false);
+
+        // Nhấp chuột thủ công vào khung để chọn file
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            handleAudioFiles(this.files);
+        });
+
+        function handleAudioFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('audio/') || file.name.endsWith('.mp3') || file.name.endsWith('.wav') || file.name.endsWith('.m4a') || file.name.endsWith('.ogg')) {
+                    fileNameSpan.textContent = file.name;
+                    fileInfo.classList.remove('hidden');
+                    
+                    // Kích hoạt nút bấm Bắt Đầu
+                    startTestBtn.disabled = false;
+                    startTestBtn.classList.remove('bg-zinc-300', 'cursor-not-allowed');
+                    startTestBtn.classList.add('bg-black', 'hover:bg-zinc-800', 'cursor-pointer', 'animate-pulse');
+                    startTestBtn.textContent = "Bắt đầu làm bài";
+                    
+                    // Tạo URL cục bộ gán vào đối tượng audio phát ngầm
+                    const objectURL = URL.createObjectURL(file);
+                    audio.src = objectURL;
+                    audioErrorBanner.classList.add('hidden');
+                    updateAudioUIStatus("Sẵn sàng");
+                } else {
+                    alert('Định dạng tệp không hợp lệ! Vui lòng tải lên tệp âm thanh (.mp3, .wav, .m4a, v.v.).');
+                }
+            }
+        }
+
+        // BẮT ĐẦU LÀM BÀI THI (Khi nhấn vào nút Start)
+        startTestBtn.addEventListener('click', () => {
             document.getElementById('start-modal').classList.add('opacity-0', 'pointer-events-none');
             
-            // Bắt đầu phát Part 1 tự động
-            loadAndPlayPart(1);
+            // Phát bài nghe liên tục
+            startAudioPlayback();
             
-            // Bắt đầu đếm ngược thời gian thi
+            // Bắt đầu đếm ngược 40 phút thi
             startTimer();
         });
 
-        // ĐIỀU KHIỂN PLAY / PAUSE (Không thể tua thời gian hay chỉnh âm lượng)
-        playPauseBtn.addEventListener('click', () => {
-            if (hasGraded) return;
-            if (audio.paused) {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        playPauseBtn.innerHTML = '<i class="fa-solid fa-pause text-[10px]"></i>';
-                        updateAudioUIStatus(currentPlayingPart, "Playing");
-                    }).catch(err => {
-                        console.error("Play rejected:", err);
-                        showAudioErrorNotification();
-                    });
-                }
-            } else {
-                audio.pause();
-                playPauseBtn.innerHTML = '<i class="fa-solid fa-play text-[10px] ml-0.5"></i>';
-                updateAudioUIStatus(currentPlayingPart, "Paused");
-            }
-        });
-
-        // Cập nhật bộ đếm thời lượng bài nghe
+        // Cập nhật hiển thị thời gian chạy bài nghe lên Header
         audio.addEventListener('timeupdate', () => {
             const current = formatAudioTime(audio.currentTime);
             const total = formatAudioTime(audio.duration || 0);
@@ -923,7 +966,7 @@
             return `${m}:${s}`;
         }
 
-        // Hiển thị banner lỗi khi file trên GitHub không tải được
+        // Hiển thị thông báo khi có sự cố phát file nghe
         function showAudioErrorNotification() {
             audioErrorBanner.classList.remove('hidden');
             questionsWorkspace.scrollTo({ top: 0, behavior: 'smooth' });
@@ -935,7 +978,7 @@
             }
         });
 
-        // ĐIỀU HƯỚNG TAB CÂU HỎI (PART 1 - 4)
+        // ĐIỀU HƯỚNG TỪNG TAB PART CÂU HỎI (1 - 4)
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const partNum = this.getAttribute('data-target');
@@ -960,7 +1003,7 @@
             document.getElementById(`part-content-${partNum}`).classList.add('block');
         }
 
-        // CUỘN TRƠN TRU TỚI VỊ TRÍ CÂU HỎI KHI NHẤN NÚT NẮT GRID
+        // CUỘN TRƠN TRU TỚI VỊ TRÍ CÂU HỎI KHI NHẤN NÚT TRÊN SIDEBAR
         function scrollToQuestion(qNum) {
             let partTarget = 1;
             if (qNum >= 11 && qNum <= 20) partTarget = 2;
@@ -1003,7 +1046,7 @@
             }
         }
 
-        // BỘ ĐẾM THỜI GIAN THI
+        // BỘ ĐẾM THỜI GIAN NGƯỢC
         function startTimer() {
             if (isTimerRunning) return;
             isTimerRunning = true;
@@ -1023,12 +1066,12 @@
             const s = (timerSeconds % 60).toString().padStart(2, '0');
             document.getElementById('timer-display').textContent = `${m}:${s}`;
             
-            if (timerSeconds < 120) {
+            if (timerSeconds < 120) { // Cảnh báo đỏ khi còn dưới 2 phút
                 document.getElementById('countdown-timer').classList.add('bg-red-950', 'text-red-500', 'border-red-800');
             }
         }
 
-        // LƯU TRẠNG THÁI NHẬP CÂU TRẢ LỜI ĐIỀN KHUYẾT
+        // THEO DÕI NHẬP LIỆU Ô TRỐNG
         document.querySelectorAll('input[type="text"]').forEach(input => {
             input.addEventListener('input', function() {
                 const qNum = this.getAttribute('data-qnum');
@@ -1039,7 +1082,7 @@
             });
         });
 
-        // LỰA CHỌN TRẮC NGHIỆM ĐƠN CÂU HỎI
+        // LỰA CHỌN ĐÁP ÁN TRẮC NGHIỆM ĐƠN CÂU HỎI
         document.querySelectorAll('.mc-options-grid').forEach(grid => {
             const qKey = grid.getAttribute('data-question');
             const qNum = qKey.replace('q', '');
@@ -1058,7 +1101,7 @@
             });
         });
 
-        // LỰA CHỌN TRẮC NGHIỆM NHÓM (CHỌN 2 ĐÁP ÁN)
+        // LỰA CHỌN ĐÁP ÁN NHÓM (CHỌN 2 ĐÁP ÁN ĐỒNG THỜI)
         document.querySelectorAll('.checkbox-grid').forEach(grid => {
             const groupKey = grid.getAttribute('data-group');
             const buttons = grid.querySelectorAll('.mc-checkbox-btn');
@@ -1102,15 +1145,14 @@
             }
         }
 
-        // TOÀN BỘ CƠ CHẾ CHẤM ĐIỂM SỬA ĐỔI THEO ĐÁP ÁN MỚI
+        // TOÀN BỘ CƠ CHẾ CHẤM ĐIỂM
         function gradeTest() {
             if (hasGraded) return;
             hasGraded = true;
             isTimerRunning = false;
             clearInterval(timerInterval);
             audio.pause();
-            playPauseBtn.innerHTML = '<i class="fa-solid fa-lock text-zinc-500"></i>';
-            updateAudioUIStatus(currentPlayingPart, "Locked");
+            updateAudioUIStatus("Đã khóa");
 
             document.getElementById('btn-submit-exam').disabled = true;
             document.getElementById('btn-submit-exam').classList.add('opacity-50', 'cursor-not-allowed');
@@ -1124,7 +1166,7 @@
 
                 let isCorrect = false;
 
-                // Xử lý so khớp các nhóm câu hỏi trắc nghiệm ghép cặp chọn 2 đáp án bất kỳ thứ tự
+                // Xử lý chấm điểm các nhóm câu hỏi trắc nghiệm ghép đôi
                 if (i === 17 || i === 18) {
                     const user17 = (USER_ANSWERS['q17'] || "").trim().toUpperCase();
                     const user18 = (USER_ANSWERS['q18'] || "").trim().toUpperCase();
@@ -1178,11 +1220,11 @@
                 } else {
                     isCorrect = userAns === correctAns;
                     
-                    // So khớp linh hoạt cho câu 9 (chấp nhận cả chữ số và ký tự chữ cái)
+                    // So khớp linh hoạt cho câu số 9
                     if (i === 9 && (userAns === '30' || userAns === 'thirty')) {
                         isCorrect = true;
                     }
-                    // So khớp linh hoạt cho câu 40 (chấp nhận cả danh từ số ít hoặc số nhiều)
+                    // So khớp linh hoạt cho câu số 40
                     if (i === 40 && (userAns === 'drone' || userAns === 'drones')) {
                         isCorrect = true;
                     }
@@ -1190,7 +1232,7 @@
 
                 if (isCorrect) score++;
 
-                // Phản hồi kết quả bằng màu sắc trên bảng điều hướng
+                // Phân bố hiển thị màu đúng/sai trên sidebar điều hướng
                 const navBtn = document.getElementById(`nav-btn-q${i}`);
                 if (navBtn) {
                     navBtn.className = `nav-btn h-9 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer select-none transition-colors ${isCorrect ? 'nav-correct' : 'nav-wrong'}`;
@@ -1209,7 +1251,7 @@
                         } else {
                             input.className = "blank-underlined font-mono font-bold text-center px-1 w-40 text-red-600 bg-red-50 border-bottom-2 border-red-500 text-line-through";
                             
-                            // Hiển thị trực tiếp đáp án đúng cạnh bên kết quả làm sai
+                            // Gắn nhãn hiển thị trực tiếp đáp án chính xác bên cạnh bài làm sai
                             const corrSpan = document.createElement('span');
                             corrSpan.className = 'ml-1.5 inline-block text-[11px] text-green-700 font-sans font-bold bg-green-100 border border-green-300 rounded px-1.5 py-0.5 select-all';
                             corrSpan.textContent = KEY_ANSWERS[qKey];
@@ -1261,14 +1303,14 @@
                 }
             }
 
-            // Hiển thị kết quả Band Score và điểm Raw
+            // Quy đổi hiển thị điểm thô và Band Score
             document.getElementById('modal-score').textContent = `${score}/40`;
             document.getElementById('modal-band-score').textContent = calculateBandScore(score);
             document.getElementById('score-modal').classList.remove('opacity-0', 'pointer-events-none');
             document.getElementById('score-modal-content').classList.remove('scale-95');
         }
 
-        // BẢNG QUY ĐỔI ĐIỂM CHUẨN IELTS LISTENING
+        // BẢNG QUY ĐỔI ĐIỂM SỐ CHUẨN ĐỀ THI LISTENING
         function calculateBandScore(score) {
             if (score >= 39) return "9.0";
             if (score >= 37) return "8.5";
@@ -1286,13 +1328,13 @@
             return "2.5";
         }
 
-        // ĐÓNG MODAL KẾT QUẢ ĐỂ XEM LẠI BÀI LÀM
+        // Đóng bảng điểm để xem lại bài làm thực tế
         document.getElementById('modal-close-btn').addEventListener('click', () => {
             document.getElementById('score-modal').classList.add('opacity-0', 'pointer-events-none');
             document.getElementById('score-modal-content').classList.add('scale-95');
         });
 
-        // HỆ THỐNG TÔ MÀU HIGHLIGHT CHUYÊN NGHIỆP
+        // HỆ THỐNG ĐÁNH DẤU MÀU HIGHLIGHT VĂN BẢN
         const highlightMenu = document.getElementById('highlight-menu');
         
         document.addEventListener('mouseup', (e) => {
@@ -1359,10 +1401,10 @@
             if (!highlightMenu.contains(e.target) && e.target.nodeName !== 'MARK') highlightMenu.style.display = 'none'; 
         });
 
-        // KHUNG CO GIÃN THAY ĐỔI TỶ LỆ KÍCH THƯỚC BẢNG TRÁI/PHẢI (ĐÃ SỬA LỖI ĐỊNH VỊ)
+        // ĐIỀU KHIỂN CO GIÃN PHÂN CHIA WORKSPACE TRÁI - PHẢI
         const resizeHandle = document.getElementById('resize-handle');
         const sidebarPanel = document.getElementById('sidebar-panel');
-        const workspaceContainer = document.getElementById('workspace-container'); // Đã thêm khai báo để sửa lỗi đơ màn hình
+        const workspaceContainer = document.getElementById('workspace-container');
         let isResizing = false;
 
         function startResize(e) { 
@@ -1397,9 +1439,9 @@
         document.addEventListener('touchmove', onResize); 
         document.addEventListener('touchend', stopResize);
 
-        // NỘP BÀI THI (CONFIRM BẰNG TIẾNG ANH)
+        // XÁC NHẬN NỘP BÀI THI
         document.getElementById('btn-submit-exam').addEventListener('click', () => {
-            const confirmBox = confirm("Are you sure you want to submit your test now? You will not be able to change your answers.");
+            const confirmBox = confirm("Bạn có chắc chắn muốn nộp bài thi thử Listening ngay bây giờ không?");
             if (confirmBox) {
                 gradeTest();
             }
