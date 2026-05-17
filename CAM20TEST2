@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Practice Test (Test 2)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Tùy chỉnh thanh cuộn cho mượt mà */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+        /* Tùy chỉnh vùng bôi màu câu hỏi */
+        mark.ielts-highlight { border-radius: 2px; cursor: pointer; transition: opacity 0.2s; }
+        mark.ielts-highlight:hover { opacity: 0.8; }
+        
+        .question-target { transition: background-color 0.5s ease; scroll-margin-top: 30px; }
+        .question-target.highlight-scroll { background-color: #f4f4f5; }
+
+        /* Ô nhập liệu dạng gạch chân đặc trưng của IELTS */
+        .blank-underlined {
+            border-bottom: 2px solid #000;
+            background: transparent;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .blank-underlined:focus {
+            border-bottom-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        /* Định dạng các nút chọn trắc nghiệm và checkbox */
+        .mc-opt-btn.active { border-color: #000000 !important; background-color: #f4f4f5 !important; }
+        .mc-opt-btn.active .radio-circle { border-color: #000000 !important; }
+        .mc-opt-btn.active .radio-dot { transform: scale(1) !important; opacity: 1 !important; }
+
+        /* Custom dropdown style */
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
+            padding-right: 28px;
+        }
+
+        /* Định dạng hiển thị màu sắc khi đã chấm điểm */
+        .graded-correct { background-color: #f0fdf4 !important; border-color: #22c55e !important; color: #15803d !important; }
+        .graded-correct .radio-circle { border-color: #22c55e !important; }
+        .graded-correct .radio-dot { background-color: #22c55e !important; transform: scale(1) !important; opacity: 1 !important; }
+
+        .graded-wrong { background-color: #fef2f2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+        .graded-wrong .radio-circle { border-color: #ef4444 !important; }
+        .graded-wrong .radio-dot { background-color: #ef4444 !important; transform: scale(1) !important; opacity: 1 !important; }
+        .text-line-through { text-decoration: line-through; }
+
+        .input-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; font-weight: bold; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #ef4444 !important; text-decoration: line-through; }
+        
+        .nav-correct { background-color: #22c55e !important; color: white !important; border-color: #16a34a !important; }
+        .nav-wrong { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
+    </style>
+</head>
+<body class="bg-white text-zinc-900 overflow-hidden h-screen flex flex-col font-sans select-none">
+
+    <!-- Đối tượng Audio trung tâm để phát âm thanh cục bộ -->
+    <audio id="exam-audio" preload="auto"></audio>
+
+    <!-- HỘP THOẠI BẮT ĐẦU THI (Nơi kéo thả file từ máy tính) -->
+    <div id="start-modal" class="fixed inset-0 bg-zinc-950 backdrop-blur-md flex items-center justify-center z-[200] transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-xl border border-zinc-200 w-11/12 max-w-lg shadow-2xl text-center">
+            <div class="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <i class="fa-solid fa-headphones-simple text-2xl animate-pulse"></i>
+            </div>
+            <h2 class="text-xl font-extrabold uppercase tracking-wider mb-2 text-black">IELTS Listening Practice Test 2</h2>
+            <p class="text-xs text-zinc-500 mb-6 leading-relaxed font-medium">
+                To start the continuous listening simulation, please drag and drop the single continuous MP3 test audio file from your computer below, or click to browse. Once loaded, the timer starts and the audio plays without control options to replicate the real exam.
+            </p>
+            
+            <!-- VÙNG KÉO THẢ / CHỌN FILE ÂM THANH TRỰC TIẾP -->
+            <div id="audio-drop-zone" class="border-2 border-dashed border-zinc-300 hover:border-black rounded-lg p-8 mb-6 cursor-pointer transition-all bg-zinc-50 flex flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-file-audio text-4xl text-zinc-400" id="audio-drop-icon"></i>
+                <p class="text-xs font-bold text-zinc-700" id="audio-drop-text">Drag & drop your full test audio here, or click to browse</p>
+                <p class="text-[10px] text-zinc-400">Accepts a single continuous .mp3 or .wav file</p>
+                <input type="file" id="local-audio-input" accept="audio/*" class="hidden">
+            </div>
+
+            <button class="bg-zinc-300 text-zinc-500 font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all w-full cursor-not-allowed" id="btn-start-test" disabled>
+                Select Audio File First
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER CHỨA THỜI GIAN VÀ TRẠNG THÁI KHÔNG CÓ NÚT PLAY -->
+    <header class="bg-black text-white px-6 py-4 flex justify-between items-center border-b-2 border-black z-30 select-none shrink-0">
+        <div class="logo-area flex items-center gap-4">
+            <h1 class="text-lg font-bold tracking-widest uppercase">IELTS Listening</h1>
+            <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded">Continuous CD Mode</span>
+        </div>
+
+        <!-- Không có nút Play/Pause và thanh tua để đúng chuẩn CD thi thật - chỉ hiển thị trạng thái phát và Volume -->
+        <div class="hidden sm:flex items-center gap-4 bg-zinc-950 px-4 py-2 rounded-lg border border-zinc-800 text-xs select-none">
+            <span id="audio-status-label" class="text-zinc-400 font-semibold tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-circle text-[8px] text-zinc-600"></i> No audio loaded
+            </span>
+            <div class="h-4 w-[1px] bg-zinc-800"></div>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-volume-high text-zinc-400 text-[10px]"></i>
+                <input type="range" id="volume-control" min="0" max="1" step="0.05" value="1" class="w-20 accent-white h-1 bg-zinc-700 rounded-lg cursor-pointer" title="Adjust Volume">
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded border border-zinc-800 font-mono text-base font-bold transition-all" id="countdown-timer">
+                <i class="fa-regular fa-clock text-sm"></i>
+                <span id="timer-display">40:00</span>
+            </div>
+            <button class="bg-white hover:bg-zinc-200 text-black font-bold py-2 px-4 rounded text-xs uppercase tracking-wider transition-colors" id="btn-submit-exam">
+                Submit Test
+            </button>
+        </div>
+    </header>
+
+    <!-- CÁC TAB CHUYỂN PHẦN CÂU HỎI -->
+    <div class="flex bg-zinc-100 border-b border-zinc-200 px-6 gap-1 select-none z-20 shrink-0">
+        <button class="tab-btn active px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="1">Part 1</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="2">Part 2</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="3">Part 3</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="4">Part 4</button>
+    </div>
+
+    <!-- KHÔNG GIAN LÀM BÀI -->
+    <div class="flex flex-1 overflow-hidden relative" id="workspace-container">
+        
+        <!-- BẢNG BÊN TRÁI: HIỂN THỊ CÁC CÂU HỎI -->
+        <div class="w-[80%] h-full overflow-y-auto p-10 bg-white border-r border-zinc-200 relative select-text" id="questions-workspace">
+            
+            <!-- Hướng dẫn tô màu -->
+            <div class="bg-zinc-100 border border-zinc-200 p-3 rounded text-xs text-zinc-700 mb-6 flex items-center gap-2 select-none">
+                <i class="fa-solid fa-circle-info text-black flex-shrink-0"></i>
+                <span><strong>Highlight Tool:</strong> Select any text in the questions area with your mouse to highlight it. Click on the highlighted text to remove it.</span>
+            </div>
+
+            <!-- PART 1 QUESTIONS -->
+            <div id="part-content-1" class="part-content block">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 1</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 1–10</h1>
+                
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-8 select-none">
+                    <p class="text-sm font-semibold">Complete the table below.</p>
+                    <p class="text-xs text-zinc-600 mt-1">Write <span class="font-bold text-black">ONE WORD AND/OR A NUMBER</span> for each answer.</p>
+                </div>
+
+                <div class="border border-zinc-200 rounded-lg p-8 bg-zinc-50/50 mb-8 font-serif leading-relaxed text-black max-w-3xl mx-auto">
+                    <div class="text-xl font-bold mb-6 text-center text-zinc-800 border-b border-zinc-200 pb-3">Support for Caregivers</div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <p class="font-bold text-zinc-800 mb-2">Local councils can arrange practical support to help those caring for elderly people at home.</p>
+                            <p class="font-bold text-zinc-700 mb-2">This can give the carer:</p>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li>time for other responsibilities</li>
+                                <li class="question-target p-1 rounded" id="q-target-1">
+                                    a <strong>1</strong> <input type="text" id="blank-q1" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="1">
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Assessment of mother’s needs</div>
+                            <p class="font-semibold text-zinc-700 mb-2">This may include discussion of:</p>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-2">
+                                    how much <strong>2</strong> <input type="text" id="blank-q2" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="2"> the caring involves
+                                </li>
+                                <li>what types of tasks are involved, e.g.
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li>help with dressing</li>
+                                        <li class="question-target p-1 rounded" id="q-target-3">
+                                            helping her have a <strong>3</strong> <input type="text" id="blank-q3" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="3">
+                                        </li>
+                                        <li>shopping</li>
+                                        <li>helping with meals</li>
+                                        <li class="question-target p-1 rounded" id="q-target-4">
+                                            dealing with <strong>4</strong> <input type="text" id="blank-q4" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="4">
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>any aspects of caring that are especially difficult, e.g.
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-5">
+                                            loss of <strong>5</strong> <input type="text" id="blank-q5" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="5">
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-6">
+                                            <strong>6</strong> <input type="text" id="blank-q6" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="6"> her
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-7">
+                                            preventing a <strong>7</strong> <input type="text" id="blank-q7" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="7">
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Types of support that may be offered to carers</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-8">
+                                    transport costs, e.g. cost of a <strong>8</strong> <input type="text" id="blank-q8" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="8">
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-9">
+                                    car-related costs, e.g. fuel and <strong>9</strong> <input type="text" id="blank-q9" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="9">
+                                </li>
+                                <li>help with housework</li>
+                                <li class="question-target p-1 rounded" id="q-target-10">
+                                    help to reduce <strong>10</strong> <input type="text" id="blank-q10" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="10">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 2 QUESTIONS -->
+            <div id="part-content-2" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 2</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 11–20</h1>
+                
+                <!-- Q11-16 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 11–16</p>
+                    <p class="text-xs text-zinc-600 mt-1">What is the role of the volunteers in each of the following activities?</p>
+                    <p class="text-xs text-zinc-700 mt-2 font-bold">Choose SIX answers from the box and write the correct letter, A-I, next to Questions 11-16.</p>
+                </div>
+
+                <div class="border border-zinc-200 bg-zinc-50 p-5 rounded-lg mb-8 text-sm space-y-1.5 select-none font-medium">
+                    <div class="font-bold text-zinc-800 mb-2 uppercase tracking-wider text-xs">Roles of Volunteers:</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <p><strong>A</strong> providing entertainment</p>
+                        <p><strong>B</strong> providing publicity about a council service</p>
+                        <p><strong>C</strong> contacting local businesses</p>
+                        <p><strong>D</strong> giving advice to visitors</p>
+                        <p><strong>E</strong> collecting feedback on events</p>
+                        <p><strong>F</strong> selling tickets</p>
+                        <p><strong>G</strong> introducing guest speakers at an event</p>
+                        <p><strong>H</strong> encouraging cooperation between local organisations</p>
+                        <p><strong>I</strong> helping people find their seats</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-10 max-w-2xl">
+                    <div class="grid grid-cols-1 gap-3">
+                        <!-- Q11 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-11">
+                            <span class="text-sm font-semibold">11. Walking around the town centre</span>
+                            <select id="select-q11" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="11">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                        <!-- Q12 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-12">
+                            <span class="text-sm font-semibold">12. Helping at concerts</span>
+                            <select id="select-q12" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="12">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                        <!-- Q13 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-13">
+                            <span class="text-sm font-semibold">13. Getting involved with community groups</span>
+                            <select id="select-q13" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="13">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                        <!-- Q14 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-14">
+                            <span class="text-sm font-semibold">14. Helping with a magazine</span>
+                            <select id="select-q14" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="14">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                        <!-- Q15 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-15">
+                            <span class="text-sm font-semibold">15. Participating at lunches for retired people</span>
+                            <select id="select-q15" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="15">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                        <!-- Q16 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-16">
+                            <span class="text-sm font-semibold">16. Helping with the website</span>
+                            <select id="select-q16" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="16">
+                                <option value="">Select Role</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q17-20 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 17–20</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose the correct letter, <span class="font-bold text-black">A, B or C</span>.</p>
+                </div>
+
+                <div class="space-y-6 mb-5 max-w-3xl">
+                    <!-- Q17 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm animate-fade-in" id="q-target-17" data-qnum="17">
+                        <div class="text-sm font-bold mb-3">17. Which event requires the largest number of volunteers?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q17">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. the music festival</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. the science festival</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. the book festival</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-18" data-qnum="18">
+                        <div class="text-sm font-bold mb-3">18. What is the most important requirement for volunteers at the festivals?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q18">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. interpersonal skills</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. personal interest in the event</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. flexibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-19" data-qnum="19">
+                        <div class="text-sm font-bold mb-3">19. New volunteers will start working in the week beginning</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q19">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. 2 September.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. 9 September.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. 23 September.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q20 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-20" data-qnum="20">
+                        <div class="text-sm font-bold mb-3">20. What is the next annual event for volunteers?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q20">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. a boat trip</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. a barbecue</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. a party</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 3 QUESTIONS -->
+            <div id="part-content-3" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 3</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 21–30</h1>
+
+                <!-- Q21-25 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 21–25</p>
+                    <p class="text-xs text-zinc-600 mt-1">What is Rosie and Colin’s opinion about each of the following aspects of human geography?</p>
+                    <p class="text-xs text-zinc-700 mt-2 font-bold">Choose FIVE answers from the box and write the correct letter, A-G, next to Questions 21-25.</p>
+                </div>
+
+                <div class="border border-zinc-200 bg-zinc-50 p-5 rounded-lg mb-8 text-sm space-y-1.5 select-none font-medium">
+                    <div class="font-bold text-zinc-800 mb-2 uppercase tracking-wider text-xs">Opinions:</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <p><strong>A</strong> The information given about this was too vague.</p>
+                        <p><strong>B</strong> This may not be relevant to their course.</p>
+                        <p><strong>C</strong> This will involve only a small number of statistics.</p>
+                        <p><strong>D</strong> It will be easy to find facts about this.</p>
+                        <p><strong>E</strong> The facts about this may not be reliable.</p>
+                        <p><strong>F</strong> No useful research has been done on this.</p>
+                        <p><strong>G</strong> The information provided about this was interesting.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-10 max-w-2xl">
+                    <div class="grid grid-cols-1 gap-3">
+                        <!-- Q21 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-21">
+                            <span class="text-sm font-semibold">21. Population</span>
+                            <select id="select-q21" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="21">
+                                <option value="">Select Opinion</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                        <!-- Q22 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-22">
+                            <span class="text-sm font-semibold">22. Health</span>
+                            <select id="select-q22" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="22">
+                                <option value="">Select Opinion</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                        <!-- Q23 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-23">
+                            <span class="text-sm font-semibold">23. Economies</span>
+                            <select id="select-q23" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="23">
+                                <option value="">Select Opinion</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                        <!-- Q24 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-24">
+                            <span class="text-sm font-semibold">24. Culture</span>
+                            <select id="select-q24" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="24">
+                                <option value="">Select Opinion</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                        <!-- Q25 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center" id="q-target-25">
+                            <span class="text-sm font-semibold">25. Poverty</span>
+                            <select id="select-q25" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="25">
+                                <option value="">Select Opinion</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q26-30 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 26–30</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose the correct letter, <span class="font-bold text-black">A, B or C</span>.</p>
+                </div>
+
+                <div class="space-y-6 mb-5 max-w-3xl">
+                    <!-- Q26 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-26" data-qnum="26">
+                        <div class="text-sm font-bold mb-3">26. Rosie says that in her own city the main problem is</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q26">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. crime.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. housing.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. unemployment.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q27 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-27" data-qnum="27">
+                        <div class="text-sm font-bold mb-3">27. What recent additions to the outskirts of their cities are both students happy about?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q27">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. conference centres</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. sports centres</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. retail centres</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q28 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-28" data-qnum="28">
+                        <div class="text-sm font-bold mb-3">28. The students agree that developing disused industrial sites may</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q28">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. have unexpected costs.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. damage the urban environment.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. destroy valuable historical buildings.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q29 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-29" data-qnum="29">
+                        <div class="text-sm font-bold mb-3">29. The students will mention Masdar City as an example of an attempt to achieve</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q29">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. daily collections for waste recycling.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. sustainable energy use.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. free transport for everyone.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q30 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-30" data-qnum="30">
+                        <div class="text-sm font-bold mb-3">30. When discussing the ecotown of Greenhill Abbots, Colin is uncertain about</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q30">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. what its objectives were.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. why there was opposition to it.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. how much of it has actually been built.</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 4 QUESTIONS -->
+            <div id="part-content-4" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 4</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 31–40</h1>
+
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-8 select-none">
+                    <p class="text-sm font-semibold">Complete the notes below.</p>
+                    <p class="text-xs text-zinc-600 mt-1">Write <span class="font-bold text-black">ONE WORD ONLY</span> for each answer.</p>
+                </div>
+
+                <div class="border border-zinc-200 rounded-lg p-8 bg-zinc-50/50 mb-5 font-serif leading-relaxed text-black max-w-3xl mx-auto">
+                    <div class="text-2xl font-bold mb-6 text-center text-zinc-800 border-b border-zinc-200 pb-3">Developing food trends</div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li class="question-target p-1 rounded" id="q-target-31">
+                                    The growth in interest in food fashions started with <strong>31</strong> <input type="text" id="blank-q31" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="31"> of food being shared on social media.
+                                </li>
+                                <li>The UK food industry is constantly developing products which are new or different.</li>
+                                <li>Influencers on social media become ‘ambassadors’ for a brand.
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-32">
+                                            Sales of <strong>32</strong> <input type="text" id="blank-q32" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="32"> food brands have grown rapidly this way.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Supermarkets track demand for ingredients on social media.
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-33">
+                                            Famous <strong>33</strong> <input type="text" id="blank-q33" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="33"> are influential.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Marketing campaigns</div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li>The avocado:
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-34">
+                                            <strong>34</strong> <input type="text" id="blank-q34" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="34"> were invited to visit growers in South Africa.
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-35">
+                                            Advertising focused on its <strong>35</strong> <input type="text" id="blank-q35" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="35"> benefits.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Oat milk:
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li>A Swedish brand’s media campaign received publicity by upsetting competitors.</li>
+                                        <li class="question-target p-1 rounded" id="q-target-36">
+                                            Promotion in the USA through <strong>36</strong> <input type="text" id="blank-q36" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="36"> shops reduced the need for advertising.
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-37">
+                                            It appealed to consumers who are concerned about the <strong>37</strong> <input type="text" id="blank-q37" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="37">.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Norwegian skrei:
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-38">
+                                            has helped strengthen the <strong>38</strong> <input type="text" id="blank-q38" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="38"> of Norwegian seafood.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Ethical concerns</div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li>Quinoa:
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-39">
+                                            Its success led to an increase in its <strong>39</strong> <input type="text" id="blank-q39" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="39">.
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-40">
+                                            Overuse of resources resulted in poor quality <strong>40</strong> <input type="text" id="blank-q40" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="40">.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- THANH CHIA KÉO GIÃN KHÔNG GIAN -->
+        <div class="w-1.5 bg-zinc-200 hover:bg-black cursor-col-resize h-full select-none transition-colors duration-150 shrink-0 z-20" id="resize-handle"></div>
+
+        <!-- BẢNG BÊN PHẢI: CHỨA BẢNG ĐIỀU HƯỚNG CÂU HỎI -->
+        <div class="w-[20%] h-full flex flex-col p-6 bg-zinc-50 select-none overflow-y-auto shrink-0" id="sidebar-panel">
+            <div class="flex flex-col h-full justify-between">
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-700 mb-4 flex items-center gap-1.5 border-b border-zinc-200 pb-2">
+                        <i class="fa-solid fa-list-ol"></i> Navigation
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2" id="nav-grid-container">
+                        <script>
+                            for(let i=1; i<=40; i++) {
+                                document.write(`
+                                    <button id="nav-btn-q${i}" class="nav-btn h-9 rounded border border-zinc-300 bg-white text-zinc-800 text-[11px] font-bold hover:bg-zinc-100 transition-colors flex items-center justify-center cursor-pointer" onclick="scrollToQuestion(${i})">
+                                        ${i}
+                                    </button>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Footer chứa thông số kỹ thuật tối giản -->
+                <div class="border-t border-zinc-200 pt-4 mt-6 text-[10px] text-zinc-400 font-medium">
+                    <p class="uppercase tracking-wider">Exam System Status:</p>
+                    <p class="mt-1 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span> Local Audio Mode Active</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG ĐIỂM / MODAL BÁO CÁO KẾT QUẢ -->
+    <div id="score-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50 select-none">
+        <div class="bg-white p-10 rounded-xl border border-zinc-200 w-11/12 max-w-sm text-center shadow-2xl transform scale-95 transition-transform duration-300" id="score-modal-content">
+            <div class="w-32 h-32 rounded-full bg-black text-white flex flex-col items-center justify-center mx-auto mb-6 border-4 border-white shadow-xl relative">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-300 absolute top-4">Band</div>
+                <div class="text-5xl font-extrabold mt-2 tracking-tighter" id="modal-band-score">0.0</div>
+            </div>
+            <h2 class="text-xl font-extrabold uppercase tracking-widest mb-1 text-black">Test Complete</h2>
+            <div class="text-base font-bold text-zinc-800 mb-4 bg-zinc-100 py-2 rounded">Raw Score: <span id="modal-score" class="text-black">0/40</span></div>
+            <p class="text-[13px] text-zinc-500 mb-8 leading-relaxed font-medium">Your IELTS Listening Practice exam has been graded. Close this dialog to review your answers on the page.</p>
+            <button class="bg-black hover:bg-zinc-800 text-white font-bold py-3.5 px-8 text-xs uppercase tracking-wider rounded w-full transition-colors cursor-pointer shadow-md" id="modal-close-btn">Review Answers</button>
+        </div>
+    </div>
+
+    <!-- THANH MENU LỰA CHỌN MÀU BÔI ĐEN -->
+    <div id="highlight-menu" class="fixed hidden bg-black rounded py-1.5 px-3 shadow-lg z-[100] items-center gap-2.5 border border-zinc-800 select-none">
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#86efac] bg-[#bbf7d0] cursor-pointer hover:scale-110 transition-transform" data-color="#bbf7d0" title="Highlight Green"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#f9a8d4] bg-[#fbcfe8] cursor-pointer hover:scale-110 transition-transform" data-color="#fbcfe8" title="Highlight Pink"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#93c5fd] bg-[#bfdbfe] cursor-pointer hover:scale-110 transition-transform" data-color="#bfdbfe" title="Highlight Blue"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#fde047] bg-[#fef08a] cursor-pointer hover:scale-110 transition-transform" data-color="#fef08a" title="Highlight Yellow"></button>
+        <div class="w-[1px] h-4 bg-zinc-700 mx-0.5"></div>
+        <button id="btn-clear-selection" class="text-white hover:text-red-400 transition-colors" title="Delete Highlight"><i class="fa-regular fa-trash-can text-xs"></i></button>
+    </div>
+
+    <!-- KỊCH BẢN ĐIỀU KHIỂN CHÍNH -->
+    <script>
+        // Đáp án chuẩn Test 2 của bạn (bao gồm so khớp nhiều phương án từ đồng nghĩa)
+        const KEY_ANSWERS = {
+            q1: "break",
+            q2: "time",
+            q3: "shower",
+            q4: "money",
+            q5: "memory",
+            q6: "lifting",
+            q7: "fall",
+            q8: "taxi",
+            q9: "insurance",
+            q10: "stress",
+            q11: "D",
+            q12: "I",
+            q13: "H",
+            q14: "E",
+            q15: "A",
+            q16: "B",
+            q17: "B",
+            q18: "A",
+            q19: "B",
+            q20: "A",
+            q21: "D",
+            q22: "G",
+            q23: "B",
+            q24: "A",
+            q25: "E",
+            q26: "C",
+            q27: "A",
+            q28: "A",
+            q29: "B",
+            q30: "C",
+            q31: ["photos", "photographs", "pictures"], // Chấp nhận cả 3 từ cho câu 31
+            q32: "vegan",
+            q33: ["chefs", "cooks"],                     // Chấp nhận cả 2 từ cho câu 33
+            q34: ["journalists", "reporters"],           // Chấp nhận cả 2 từ cho câu 34
+            q35: "health",
+            q36: "coffee",
+            q37: "environment",
+            q38: "reputation",
+            q39: ["price", "cost"],                      // Chấp nhận cả 2 từ cho câu 39
+            q40: "soil"
+        };
+
+        const USER_ANSWERS = {};
+        let isTimerRunning = false;
+        let timerSeconds = 40 * 60; // 40 phút thi Listening
+        let timerInterval = null;
+        let hasGraded = false;
+
+        const audio = document.getElementById('exam-audio');
+        const audioStatusLabel = document.getElementById('audio-status-label');
+        const questionsWorkspace = document.getElementById('questions-workspace');
+        
+        // Cấu hình kéo thả file âm thanh cục bộ
+        const dropZone = document.getElementById('audio-drop-zone');
+        const localAudioInput = document.getElementById('local-audio-input');
+        const btnStartTest = document.getElementById('btn-start-test');
+        const dropIcon = document.getElementById('audio-drop-icon');
+        const dropText = document.getElementById('audio-drop-text');
+
+        // Sự kiện click vào vùng drop để duyệt tìm file
+        dropZone.addEventListener('click', () => {
+            localAudioInput.click();
+        });
+
+        // Xử lý tệp được chọn qua duyệt thư mục
+        localAudioInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleAudioFile(e.target.files[0]);
+            }
+        });
+
+        // Ngăn chặn sự kiện mặc định của trình duyệt để kéo thả hoạt động
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Tạo hiệu ứng tương tác kéo tệp qua vùng thả
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('border-black', 'bg-zinc-100');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('border-black', 'bg-zinc-100');
+            }, false);
+        });
+
+        // Xử lý sự kiện thả tệp (Drop)
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleAudioFile(files[0]);
+            }
+        });
+
+        // Hàm xử lý và nạp file nhạc cục bộ bằng Object URL
+        function handleAudioFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                alert('Vui lòng chọn một tệp âm thanh hợp lệ (.mp3, .wav, .m4a, ...)!');
+                return;
+            }
+            
+            try {
+                const objectURL = URL.createObjectURL(file);
+                audio.src = objectURL;
+                
+                // Cập nhật trạng thái giao diện vùng dropzone thành màu xanh thành công
+                dropZone.classList.remove('border-zinc-300');
+                dropZone.classList.add('border-green-500', 'bg-green-50/50');
+                dropIcon.className = "fa-solid fa-circle-check text-4xl text-green-500 animate-bounce";
+                dropText.innerHTML = `Loaded: <strong class="text-green-800">${file.name}</strong>`;
+                
+                // Mở khóa nút bắt đầu thi
+                btnStartTest.disabled = false;
+                btnStartTest.className = "bg-black hover:bg-zinc-800 text-white font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all cursor-pointer shadow-md w-full animate-pulse";
+                btnStartTest.textContent = "Start Test Now";
+                
+                // Cập nhật nhãn trạng thái trên header
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-headphones text-green-500"></i> ${file.name.substring(0, 20)}...`;
+            } catch (err) {
+                console.error("Lỗi khi nạp file:", err);
+                alert("Không thể tải tệp âm thanh này. Vui lòng thử lại bằng một tệp khác.");
+            }
+        }
+
+        // HÀM BẮT ĐẦU THI (Mô phỏng CD thi thật, không có Play/Pause, tự phát liền mạch)
+        btnStartTest.addEventListener('click', () => {
+            document.getElementById('start-modal').classList.add('opacity-0', 'pointer-events-none');
+            
+            // Tự động phát toàn bộ test
+            audio.play().then(() => {
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-circle-play text-green-500 animate-ping"></i> Test Audio Playing...`;
+            }).catch(err => {
+                console.error("Autoplay rejected:", err);
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i> Audio blocked. Adjust system settings.`;
+            });
+            
+            // Chạy thời gian làm bài
+            startTimer();
+        });
+
+        // ĐIỀU CHỈNH ÂM LƯỢNG (Volume)
+        const volumeControl = document.getElementById('volume-control');
+        volumeControl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
+        // ĐIỀU HƯỚNG TAB TRÁI/PHẢI
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const partNum = this.getAttribute('data-target');
+                switchTab(partNum);
+            });
+        });
+
+        function switchTab(partNum) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active', 'border-black', 'text-black');
+                b.classList.add('text-zinc-500', 'border-transparent');
+                if (b.getAttribute('data-target') === partNum.toString()) {
+                    b.classList.add('active', 'border-black', 'text-black');
+                }
+            });
+
+            document.querySelectorAll('.part-content').forEach(cont => {
+                cont.classList.add('hidden');
+                cont.classList.remove('block');
+            });
+            document.getElementById(`part-content-${partNum}`).classList.remove('hidden');
+            document.getElementById(`part-content-${partNum}`).classList.add('block');
+        }
+
+        // CUỘN TỚI VỊ TRÍ CÂU HỎI KHI BẤM SIDEBAR NAVIGATION
+        function scrollToQuestion(qNum) {
+            let partTarget = 1;
+            if (qNum >= 11 && qNum <= 20) partTarget = 2;
+            else if (qNum >= 21 && qNum <= 30) partTarget = 3;
+            else if (qNum >= 31 && qNum <= 40) partTarget = 4;
+
+            switchTab(partTarget);
+
+            let targetEl = null;
+            const isInput = (qNum >= 1 && qNum <= 10) || (qNum >= 31 && qNum <= 40);
+            const isSelect = (qNum >= 11 && qNum <= 16) || (qNum >= 21 && qNum <= 25);
+            const isRadio = (qNum >= 17 && qNum <= 20) || (qNum >= 26 && qNum <= 30);
+
+            if (isInput) {
+                targetEl = document.getElementById(`blank-q${qNum}`);
+            } else if (isSelect) {
+                targetEl = document.getElementById(`select-q${qNum}`);
+            } else if (isRadio) {
+                targetEl = document.getElementById(`q-target-${qNum}`);
+            }
+
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const highlightWrapper = targetEl.closest('.question-target') || targetEl;
+                highlightWrapper.classList.add('highlight-scroll');
+                setTimeout(() => {
+                    highlightWrapper.classList.remove('highlight-scroll');
+                }, 1000);
+
+                if (targetEl.tagName === 'INPUT' || targetEl.tagName === 'SELECT') {
+                    setTimeout(() => targetEl.focus(), 300);
+                }
+            }
+        }
+
+        // BỘ ĐẾM THỜI GIAN NGƯỢC
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerSeconds = 0;
+                    gradeTest();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const s = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').textContent = `${m}:${s}`;
+            
+            if (timerSeconds < 120) {
+                document.getElementById('countdown-timer').classList.add('bg-red-950', 'text-red-500', 'border-red-800');
+            }
+        }
+
+        // LƯU TRẠNG THÁI NHẬP CÂU TRẢ LỜI ĐIỀN KHUYẾT
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const qNum = this.getAttribute('data-qnum');
+                const val = this.value.trim();
+                USER_ANSWERS[`q${qNum}`] = val;
+                updateNavStatus(qNum, val !== '');
+            });
+        });
+
+        // LƯU TRẠNG THÁI CHỌN DROPDOWN MATCHING
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                const qNum = this.getAttribute('data-qnum');
+                const val = this.value;
+                USER_ANSWERS[`q${qNum}`] = val;
+                updateNavStatus(qNum, val !== '');
+            });
+        });
+
+        // LỰA CHỌN TRẮC NGHIỆM ĐƠN (MULTIPLE CHOICE)
+        document.querySelectorAll('.mc-options-grid').forEach(grid => {
+            const qKey = grid.getAttribute('data-question');
+            const qNum = qKey.replace('q', '');
+            const buttons = grid.querySelectorAll('.mc-opt-btn');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (hasGraded) return;
+                    buttons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const val = this.getAttribute('data-val');
+                    USER_ANSWERS[qKey] = val;
+                    updateNavStatus(qNum, true);
+                });
+            });
+        });
+
+        function updateNavStatus(qNum, hasVal) {
+            const btn = document.getElementById(`nav-btn-q${qNum}`);
+            if (btn) {
+                if (hasVal) {
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+                    btn.classList.remove('bg-white', 'text-zinc-800', 'border-zinc-300');
+                } else {
+                    btn.classList.remove('bg-black', 'text-white', 'border-black');
+                    btn.classList.add('bg-white', 'text-zinc-800', 'border-zinc-300');
+                }
+            }
+        }
+
+        // HÀM CHẤM ĐIỂM HOÀN CHỈNH CHO TEST 2
+        function gradeTest() {
+            if (hasGraded) return;
+            hasGraded = true;
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            audio.pause();
+            audioStatusLabel.innerHTML = `<i class="fa-solid fa-lock text-zinc-500"></i> Locked`;
+
+            document.getElementById('btn-submit-exam').disabled = true;
+            document.getElementById('btn-submit-exam').classList.add('opacity-50', 'cursor-not-allowed');
+
+            let score = 0;
+
+            for (let i = 1; i <= 40; i++) {
+                const qKey = `q${i}`;
+                const userAns = (USER_ANSWERS[qKey] || "").trim().toLowerCase();
+                const targetAns = KEY_ANSWERS[qKey];
+
+                let isCorrect = false;
+
+                // Xử lý so khớp các câu trả lời linh hoạt (mảng đáp án đồng nghĩa)
+                if (Array.isArray(targetAns)) {
+                    isCorrect = targetAns.map(ans => ans.toLowerCase().trim()).includes(userAns);
+                } else {
+                    isCorrect = userAns === targetAns.toLowerCase().trim();
+                }
+
+                if (isCorrect) score++;
+
+                // Phản hồi kết quả lên cột biểu tượng điều hướng câu hỏi bên phải
+                const navBtn = document.getElementById(`nav-btn-q${i}`);
+                if (navBtn) {
+                    navBtn.className = `nav-btn h-9 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer select-none transition-colors ${isCorrect ? 'nav-correct' : 'nav-wrong'}`;
+                }
+
+                const isInput = (i >= 1 && i <= 10) || (i >= 31 && i <= 40);
+                const isSelect = (i >= 11 && i <= 16) || (i >= 21 && i <= 25);
+                const isRadio = (i >= 17 && i <= 20) || (i >= 26 && i <= 30);
+
+                if (isInput) {
+                    const input = document.getElementById(`blank-q${i}`);
+                    if (input) {
+                        input.disabled = true;
+                        if (isCorrect) {
+                            input.className = "blank-underlined font-mono font-bold text-center px-1 w-40 text-green-700 bg-green-50 border-bottom-2 border-green-600";
+                        } else {
+                            input.className = "blank-underlined font-mono font-bold text-center px-1 w-40 text-red-600 bg-red-50 border-bottom-2 border-red-500 text-line-through";
+                            
+                            // Gắn nhãn đáp án đúng bên cạnh ô nhập liệu sai
+                            const corrSpan = document.createElement('span');
+                            corrSpan.className = 'ml-1.5 inline-block text-[11px] text-green-700 font-sans font-bold bg-green-100 border border-green-300 rounded px-1.5 py-0.5 select-all';
+                            corrSpan.textContent = Array.isArray(targetAns) ? targetAns.join(' / ') : targetAns;
+                            input.parentNode.appendChild(corrSpan);
+                        }
+                    }
+                } else if (isSelect) {
+                    const select = document.getElementById(`select-q${i}`);
+                    if (select) {
+                        select.disabled = true;
+                        if (isCorrect) {
+                            select.className = "custom-select border border-green-500 rounded px-3 py-1.5 text-xs font-bold outline-none bg-green-50 text-green-700";
+                        } else {
+                            select.className = "custom-select border border-red-500 rounded px-3 py-1.5 text-xs font-bold outline-none bg-red-50 text-red-600 text-line-through";
+                            
+                            const corrSpan = document.createElement('span');
+                            corrSpan.className = 'ml-1.5 inline-block text-[11px] text-green-700 font-sans font-bold bg-green-100 border border-green-300 rounded px-1.5 py-0.5';
+                            corrSpan.textContent = `Correct: ${targetAns}`;
+                            select.parentNode.appendChild(corrSpan);
+                        }
+                    }
+                } else if (isRadio) {
+                    const targetCard = document.getElementById(`q-target-${i}`);
+                    if (targetCard) {
+                        const buttons = targetCard.querySelectorAll('.mc-opt-btn');
+                        buttons.forEach(btn => {
+                            btn.disabled = true;
+                            const btnVal = btn.getAttribute('data-val');
+                            if (btnVal === targetAns) {
+                                btn.classList.add('graded-correct');
+                            } else if (btnVal === USER_ANSWERS[qKey]) {
+                                btn.classList.add('graded-wrong');
+                            } else {
+                                btn.classList.add('opacity-50');
+                            }
+                        });
+                    }
+                }
+            }
+
+            // Hiển thị Band Score và điểm thô
+            document.getElementById('modal-score').textContent = `${score}/40`;
+            document.getElementById('modal-band-score').textContent = calculateBandScore(score);
+            document.getElementById('score-modal').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('score-modal-content').classList.remove('scale-95');
+        }
+
+        function calculateBandScore(score) {
+            if (score >= 39) return "9.0";
+            if (score >= 37) return "8.5";
+            if (score >= 35) return "8.0";
+            if (score >= 32) return "7.5";
+            if (score >= 30) return "7.0";
+            if (score >= 26) return "6.5";
+            if (score >= 23) return "6.0";
+            if (score >= 20) return "5.5";
+            if (score >= 16) return "5.0";
+            if (score >= 13) return "4.5";
+            if (score >= 10) return "4.0";
+            if (score >= 6) return "3.5";
+            if (score >= 4) return "3.0";
+            return "2.5";
+        }
+
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('score-modal').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('score-modal-content').classList.add('scale-95');
+        });
+
+        // HỆ THỐNG HIGHLIGHT VĂN BẢN (CHỈ DÀNH CHO CÂU HỎI)
+        const highlightMenu = document.getElementById('highlight-menu');
+        
+        document.addEventListener('mouseup', (e) => {
+            if (!questionsWorkspace.contains(e.target)) return;
+            setTimeout(() => {
+                const selection = window.getSelection();
+                if (selection.isCollapsed || selection.toString().trim() === "") {
+                    highlightMenu.style.display = 'none'; return;
+                }
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                highlightMenu.style.left = `${Math.max(10, rect.left + (rect.width / 2) - 65)}px`;
+                highlightMenu.style.top = `${Math.max(10, rect.top - 48)}px`;
+                highlightMenu.style.display = 'flex';
+            }, 10);
+        });
+
+        questionsWorkspace.addEventListener('scroll', () => highlightMenu.style.display = 'none');
+
+        document.querySelectorAll('.hl-color-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const color = this.getAttribute('data-color');
+                const selection = window.getSelection();
+                if (!selection.rangeCount || selection.toString().trim() === "") return;
+                
+                const range = selection.getRangeAt(0);
+                const mark = document.createElement('mark');
+                mark.className = 'ielts-highlight'; 
+                mark.style.backgroundColor = color;
+                
+                mark.addEventListener('click', function(e) { 
+                    e.stopPropagation(); 
+                    this.replaceWith(...this.childNodes); 
+                });
+                
+                try { 
+                    range.surroundContents(mark); 
+                } catch (err) { 
+                    const frag = range.extractContents(); 
+                    mark.appendChild(frag); 
+                    range.insertNode(mark); 
+                }
+                selection.removeAllRanges(); 
+                highlightMenu.style.display = 'none';
+            });
+        });
+
+        document.getElementById('btn-clear-selection').addEventListener('click', e => {
+            e.stopPropagation();
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            const parent = range.commonAncestorContainer;
+            const marks = (parent.nodeType === 1 ? parent : parent.parentNode).querySelectorAll('mark.ielts-highlight');
+            marks.forEach(mark => { 
+                if (selection.containsNode(mark, true)) mark.replaceWith(...mark.childNodes); 
+            });
+            selection.removeAllRanges(); 
+            highlightMenu.style.display = 'none';
+        });
+
+        document.addEventListener('mousedown', e => { 
+            if (!highlightMenu.contains(e.target) && e.target.nodeName !== 'MARK') highlightMenu.style.display = 'none'; 
+        });
+
+        // BỘ CO GIÃN PHÂN VÙNG GIAO DIỆN (SPLITTER RESIZE)
+        const resizeHandle = document.getElementById('resize-handle');
+        const sidebarPanel = document.getElementById('sidebar-panel');
+        const workspaceContainer = document.getElementById('workspace-container');
+        let isResizing = false;
+
+        function startResize(e) { 
+            isResizing = true; 
+            resizeHandle.classList.add('bg-black'); 
+            document.body.style.cursor = 'col-resize'; 
+            document.body.style.userSelect = 'none'; 
+        }
+        function onResize(e) {
+            if (!isResizing) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const rect = workspaceContainer.getBoundingClientRect();
+            let newWidthPercent = ((clientX - rect.left) / rect.width) * 100;
+            
+            newWidthPercent = Math.min(Math.max(newWidthPercent, 60), 90);
+            questionsWorkspace.style.width = `${newWidthPercent}%`;
+            sidebarPanel.style.width = `${100 - newWidthPercent}%`;
+        }
+        function stopResize() { 
+            if (isResizing) { 
+                isResizing = false; 
+                resizeHandle.classList.remove('bg-black'); 
+                document.body.style.cursor = ''; 
+                document.body.style.userSelect = ''; 
+            } 
+        }
+
+        resizeHandle.addEventListener('mousedown', startResize); 
+        document.addEventListener('mousemove', onResize); 
+        document.addEventListener('mouseup', stopResize);
+        resizeHandle.addEventListener('touchstart', startResize); 
+        document.addEventListener('touchmove', onResize); 
+        document.addEventListener('touchend', stopResize);
+
+        // ĐĂNG KÝ SỰ KIỆN NỘP BÀI THI (CONFIRM TIẾNG VIỆT)
+        document.getElementById('btn-submit-exam').addEventListener('click', () => {
+            const confirmBox = confirm("Bạn có chắc chắn muốn nộp bài thi Listening ngay bây giờ không? Hành động này sẽ khóa toàn bộ đáp án và hiển thị bảng điểm.");
+            if (confirmBox) {
+                gradeTest();
+            }
+        });
+    </script>
+</body>
+</html>
